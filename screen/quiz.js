@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
 import Loading from '../component/loading';
 import React, { useEffect, useState } from 'react'
 import { getQuestionsAPI } from '../api/quiz'
@@ -35,6 +35,7 @@ const Quiz = ({ navigation }) => {
     generatorOptionsAndShuffle(questions[ques + 1])
   }
   const handleSelectOptions = (option) => {
+    console.log(option)
     if (option === questions[ques].correct_answer) {
       setScore(score + 10)
     }
@@ -53,11 +54,17 @@ const Quiz = ({ navigation }) => {
               <Text style={styles.text} numberOfLines={2} > Q{ques + 1}. {decodeURIComponent(questions[ques].question)}</Text>
             </View>
             <View style={styles.options}>
-              {options.map((option, index) => (
-                <TouchableOpacity disabled={disabled} style={styles.option} key={index} onPress={() => handleSelectOptions(option)}>
-                  <Text style={{ color: 'white', fontSize: 30 }}>{decodeURIComponent(option)}</Text>
-                </TouchableOpacity>
-              ))}
+              <FlatList
+                data={options}
+                renderItem={({ item, index }) => {
+                  return (
+                    <TouchableOpacity disabled={disabled} style={styles.option} key={index} onPress={() => handleSelectOptions(item)}>
+                      <Text style={{ color: 'white', fontSize: 30 }}>{decodeURIComponent(item)}</Text>
+                    </TouchableOpacity>
+                  )
+                }
+                }
+              />
             </View>
             <View style={styles.bottom}>
               {(ques === questions.length - 1 && disabled) ? (
